@@ -1,0 +1,21 @@
+---
+
+- hosts: test
+
+  vars:
+    editor: 'nano'
+    test: 'these is a test of using ansible'
+    
+
+  tasks:
+    
+    - name: print the sql statment
+      debug: msg=" {{ test }}"
+
+
+    - name: install nano
+      apt: name={{ editor }} state=present
+      register: nano_result
+
+    - name: lets see what nano_result is
+      debug: mesg="{{ nano_result }}"

@@ -1,0 +1,22 @@
+
+
+localhost ansible_connection=local
+
+[test]
+skc-1
+
+[dev]
+skc-1
+skc-3
+skc-5
+
+[prod]
+skc-2
+skc-4
+skc-6
+
+[james]
+skc-1
+
+[stephen]
+skc-4

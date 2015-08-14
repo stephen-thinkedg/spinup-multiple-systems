@@ -1,0 +1,46 @@
+
+---
+
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars_files:
+    - ./vars/secrets.yml
+    - ./vars/gce_systems.yml
+
+  vars:
+    names: skc-1,skc-2,skc-3,skc-4,skc-5,skc-6
+  
+
+  tasks:
+    - shell: echo this is a test
+
+    - name: test the secretrs.yml file
+      debug: var="{{ test_secret }}"
+
+    - name: Launch instances
+      gce:
+        instance_names: "{{ names }}"
+        machine_type: "{{ machine_type }}"
+        image: "{{ image }}"
+        service_account_email: "{{ service_account_email }}"
+        pem_file: "{{ pem_file }}"
+        project_id: "{{ project_id }}"
+        disk_auto_delete: 'true'
+        persistent_boot_disk: 'true'
+        #external_ip: 'none'
+      register: gce
+
+    - name:  lets see what gce returned.
+      debug: msg=" {{ gce }}"
+    
+    - name: Wait for SSH to come up
+      wait_for: host={{ item.public_ip }} port=22 delay=10 timeout=60
+      with_items: gce.instance_data
+
+    - name: Add host to groupname
+      add_host: hostname={{ item.public_ip }} groupname=new_instances
+      with_items: gce.instance_data
+
+

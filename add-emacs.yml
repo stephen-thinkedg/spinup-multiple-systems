@@ -1,0 +1,21 @@
+
+---
+
+- hosts: test
+
+  vars:
+    editor: 'emacs24'
+    test: 'these is a test of using ansible'
+    
+
+  tasks:
+    
+    - name: runt a test on a var
+      debug: msg="{{ test }}"
+
+
+    - name: install emacs 24
+      apt: name={{ editor }} state=present
+
+    - name: setup skc custom emacs pacages
+      unarchive: src=./files/skc-emacs-packages.tar.gz dest=/home/stephen
